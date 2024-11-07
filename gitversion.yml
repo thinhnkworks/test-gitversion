@@ -12,7 +12,7 @@ strategies:
 - TrackReleaseBranches
 - VersionInBranchName
 branches:
-  develop:
+  main:
     mode: ContinuousDelivery
     label: alpha
     increment: Minor
@@ -20,29 +20,29 @@ branches:
       when-current-commit-tagged: false
     track-merge-target: true
     track-merge-message: true
-    regex: ^dev(elop)?(ment)?$
+    regex: ^main$
     source-branches:
-    - main
+    - production
     is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
     is-main-branch: false
     pre-release-weight: 0
-  main:
+  production:
     label: ''
     increment: Patch
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
     track-merge-message: true
-    regex: ^master$|^main$
+    regex: ^production$
     source-branches: []
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
-  release:
+  staging:
     mode: ManualDeployment
     label: beta
     increment: Minor
@@ -52,8 +52,7 @@ branches:
     track-merge-target: false
     regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
-    - main
-    - support
+    - production
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
@@ -68,10 +67,8 @@ branches:
     track-merge-message: true
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
-    - develop
-    - main
-    - release
-    - support
+    - production
+    - staging
     - hotfix
     is-source-branch-for: []
     is-main-branch: false
@@ -87,11 +84,9 @@ branches:
     track-merge-message: true
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
-    - develop
     - main
     - release
     - feature
-    - support
     - hotfix
     is-source-branch-for: []
     pre-release-weight: 30000
@@ -103,8 +98,7 @@ branches:
       when-current-commit-tagged: false
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
-    - main
-    - support
+    - production
     is-source-branch-for: []
     is-release-branch: true
     is-main-branch: false
