@@ -67,6 +67,7 @@ branches:
     track-merge-message: true
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
+    - main
     - production
     - staging
     - hotfix
