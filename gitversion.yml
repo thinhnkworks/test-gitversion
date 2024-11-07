@@ -50,7 +50,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-](?<BranchName>.+)
+    regex: ^staging$
     source-branches:
     - production
     is-source-branch-for: []
