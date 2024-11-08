@@ -6,13 +6,7 @@ on:
       - released
 
 jobs:
-  tag-semver:
-    uses: "./.github/workflows/tag-semver.yml"
-    permissions:
-      contents: write
-
   test:
-    needs: tag-semver
     runs-on: ubuntu-latest
     steps:
       - name: Echo a message
