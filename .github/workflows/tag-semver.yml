@@ -7,7 +7,7 @@ on:
       - production
 
 jobs:
-  show-gitversion:
+  tag-semver:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
