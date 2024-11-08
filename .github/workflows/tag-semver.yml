@@ -15,9 +15,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: List all tags
-        run: git tag
-
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v3.0.0
         with:
