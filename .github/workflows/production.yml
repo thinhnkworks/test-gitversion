@@ -1,0 +1,26 @@
+name: "Release to Production"
+
+on:
+  release:
+    types:
+      - released
+
+jobs:
+  tag-semver:
+    uses: "./.github/workflows/tag-semver.yml"
+    permissions:
+      contents: write
+
+  test:
+    needs: tag-semver
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo a message
+        run: echo "Testing production"
+
+  deploy-production:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo a message
+        run: echo "Deploying production"
