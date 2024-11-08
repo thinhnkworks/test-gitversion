@@ -28,6 +28,6 @@ jobs:
             git tag -a ${{ steps.show-gitversion.outputs.majorMinorPatch }} -m "${{ github.event.head_commit.message }}"
             git push origin ${{ steps.show-gitversion.outputs.majorMinorPatch }}
           else
-            git tag -a ${{ steps.show-gitversion.outputs.semVer }} -m "${{ github.event.head_commit.message }}"
+            git tag -f -a ${{ steps.show-gitversion.outputs.semVer }} -m "${{ github.event.head_commit.message }}"
             git push origin ${{ steps.show-gitversion.outputs.semVer }}
           fi
