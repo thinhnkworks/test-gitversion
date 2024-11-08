@@ -18,13 +18,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3.0.0
+        uses: gittools/actions/gitversion/setup@v2.0.1
         with:
           versionSpec: "6.x"
 
       - name: Show GitVersion
-        run: gitversion
-        shell: bash
+        id: show-gitversion
+        uses: gittools/actions/gitversion/execute@v2.0.1
 
       # - name: Tag SemVer
       #   run: |
