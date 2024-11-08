@@ -1,0 +1,33 @@
+name: "Tag SemVer"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  show-gitversion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.0.0
+        with:
+          versionSpec: "6.x"
+
+      - name: Show GitVersion
+        uses: gittools/actions/gitversion/execute@v3.0.0
+
+      - name: Tag SemVer
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            git tag -a ${{ steps.show-gitversion.outputs.majorMinorPatch }} -m "${{ github.event.head_commit.message }}"
+            git push origin ${{ steps.show-gitversion.outputs.majorMinorPatch }}
+          else
+            git tag -a ${{ steps.show-gitversion.outputs.semVer }} -m "${{ github.event.head_commit.message }}"
+            git push origin ${{ steps.show-gitversion.outputs.semVer }}
+          fi
