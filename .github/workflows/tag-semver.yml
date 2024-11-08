@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - production
+      - main
+      - staging
 
 jobs:
   tag-semver:
