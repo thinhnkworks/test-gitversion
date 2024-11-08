@@ -8,6 +8,9 @@ on:
       - main
       - staging
 
+permissions:
+  contents: write
+
 jobs:
   tag-semver:
     runs-on: ubuntu-latest
