@@ -25,6 +25,9 @@ jobs:
       - name: Show GitVersion
         id: show-gitversion
         uses: gittools/actions/gitversion/execute@v2.0.1
+        with:
+          useConfigFile: true
+          configFilePath: "gitversion.yml"
 
       # - name: Tag SemVer
       #   run: |
