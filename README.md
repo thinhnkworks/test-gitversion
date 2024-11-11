@@ -1,1 +1,1 @@
-This is feature F1 from Thinh
+This is feature authentication
