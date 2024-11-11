@@ -1,0 +1,14 @@
+name: "Hotfixes and Bugfixes"
+
+on:
+  push:
+    branches:
+      - hotfixes/*
+      - bugfixes/*
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo a message
+        run: echo "Testing"
