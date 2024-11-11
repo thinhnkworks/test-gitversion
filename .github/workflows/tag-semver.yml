@@ -13,7 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
+
+      # Move current history pointer to the latest commit
+      # Due to error of previous step: Checkout sometimes point to the second latest commit
+      - name: Update commit to HEAD
+        run: git reset --hard HEAD
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v2.0.1
