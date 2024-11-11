@@ -32,5 +32,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions Bot"
           git checkout main
-          git merge production
+          git merge origin/production
           git push
