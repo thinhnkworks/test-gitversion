@@ -16,6 +16,7 @@ permissions:
   contents: write
 
 jobs:
+  # merge branch main into staging
   merge:
     runs-on: ubuntu-latest
     steps:
@@ -48,3 +49,20 @@ jobs:
     steps:
       - name: Echo a message
         run: echo "Deploying preview"
+
+  # move branch main ahead of staging
+  update-branch-main:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fast-forward main
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git checkout main
+          git merge origin/staging
+          git push
