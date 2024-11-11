@@ -20,6 +20,8 @@ jobs:
         run: echo "Deploying production"
 
   update-branch-main:
+    permissions:
+      contents: write
     needs: deploy-production
     runs-on: ubuntu-latest
     steps:
