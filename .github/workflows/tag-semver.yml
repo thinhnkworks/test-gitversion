@@ -2,9 +2,6 @@ name: "Tag SemVer"
 
 on:
   workflow_call:
-  push:
-    branches:
-      - production
 
 permissions:
   contents: write

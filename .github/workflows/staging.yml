@@ -2,12 +2,38 @@ name: "Pre-release to Staging"
 
 on:
   workflow_dispatch:
+    inputs:
+      merge-from:
+        description: "Branch with alpha features or bugfixes"
+        required: true
+        default: "main"
+      merge-to:
+        description: "Branch to pre-release"
+        required: true
+        default: "staging"
+
+permissions:
+  contents: write
 
 jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge branches
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git checkout ${{ inputs.merge-to }}
+          git merge origin/${{ inputs.merge-from }}
+          git push
+
   tag-semver:
+    needs: merge
     uses: "./.github/workflows/tag-semver.yml"
-    permissions:
-      contents: write
 
   test:
     needs: tag-semver
