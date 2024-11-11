@@ -14,11 +14,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      # Move current history pointer to the latest commit
-      # Due to error of previous step: Checkout sometimes point to the second latest commit
-      - name: Update commit to HEAD
-        run: git reset --hard HEAD
+      - run: |
+          git checkout ${{ github.ref_name }}
+          git pull origin ${{ github.ref_name }}
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v2.0.1
