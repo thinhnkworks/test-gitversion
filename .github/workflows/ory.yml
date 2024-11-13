@@ -1,0 +1,49 @@
+name: "Ory"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  POST_LOGOUT_CALLBACK: https://sales.timejob-online.dev/app/logout,https://sales.timejob-online.dev/preview-0/app/logout,https://sales.timejob-online.dev/preview-1/app/logout,https://sales.timejob-online.dev/preview-2/app/logout,https://sales.timejob-online.dev/preview-3/app/logout,https://sales.timejob-online.dev/preview-4/app/logout,https://sales.timejob-online.dev/preview-5/app/logout,https://sales.timejob-online.dev/preview-6/app/logout,https://sales.timejob-online.dev/preview-7/app/logout,https://sales.timejob-online.dev/preview-8/app/logout,https://sales.timejob-online.dev/preview-9/app/logout,http://localhost:4200/logout,https://sales.timejob-online.dev
+  REDIRECT_URI: https://sales.timejob-online.dev/preview-0/app,https://sales.timejob-online.dev/preview-1/app,https://sales.timejob-online.dev/preview-2/app,https://sales.timejob-online.dev/preview-3/app,https://sales.timejob-online.dev/preview-4/app,https://sales.timejob-online.dev/preview-5/app,https://sales.timejob-online.dev/preview-6/app,https://sales.timejob-online.dev/preview-7/app,https://sales.timejob-online.dev/preview-8/app,https://sales.timejob-online.dev/preview-9/app,https://sales.timejob-online.dev/app,https://sales.timejob-online.dev/preview-0/app/,https://sales.timejob-online.dev/preview-1/app/,https://sales.timejob-online.dev/preview-3/app/,https://sales.timejob-online.dev/preview-4/app/,https://sales.timejob-online.dev/preview-5/app/,https://sales.timejob-online.dev/preview-6/app/,https://sales.timejob-online.dev/preview-7/app/,https://sales.timejob-online.dev/preview-8/app/,https://sales.timejob-online.dev/preview-9/app/,https://sales.timejob-online.dev/preview-2/app/,https://sales.timejob-online.dev/app/,http://localhost:4200/,http://localhost:4200,https://oauth.pstmn.io/v1/callback,https://sales.timejob-online.dev
+  PREVIEW_NUMBER: 0
+  ORY_PROJECT_API_KEY: ory_pat_9sqAQoADu3ZuOqzvRLT1aMPQtKR6mVjS
+
+jobs:
+  ory-cli:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Ory
+        run: |
+          curl https://raw.githubusercontent.com/ory/meta/master/install.sh | sh -s ory
+
+      - name: Get preview number
+        run: |
+          echo "PREVIEW_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Create new string for POST_LOGOUT_CALLBACK and REDIRECT_URI
+        run: |
+          echo "POST_LOGOUT_CALLBACK=${{ env.POST_LOGOUT_CALLBACK }},https://sales.timejob-online.dev/preview-${{ env.PREVIEW_NUMBER }}/app/logout" >> $GITHUB_ENV
+          echo "REDIRECT_URI=${{ env.REDIRECT_URI }},https://sales.timejob-online.dev/preview-${{ env.PREVIEW_NUMBER }}/app" >> $GITHUB_ENV
+          echo "REDIRECT_URI=${{ env.REDIRECT_URI }},https://sales.timejob-online.dev/preview-${{ env.PREVIEW_NUMBER }}/app,https://sales.timejob-online.dev/preview-${{ env.PREVIEW_NUMBER }}/app/" >> $GITHUB_ENV
+
+      - name: Update Client POST_LOGOUT_CALLBACK and REDIRECT_URI
+        run: |
+          ./bin/ory update oauth2-client\
+            b67cdd76-e8c3-4b73-9a0b-e1f97cdceda1\
+            --post-logout-callback "${{ env.POST_LOGOUT_CALLBACK }}"\
+            --redirect-uri "${{ env.REDIRECT_URI }}"\
+            --name "Sales SPA"\
+            --access-token-strategy "jwt"\
+            --grant-type "refresh_token,authorization_code"\
+            --response-type "code,token"\
+            --scope "openid offline_access"\
+            --skip-consent\
+            --skip-logout-consent\
+            --token-endpoint-auth-method "none"
