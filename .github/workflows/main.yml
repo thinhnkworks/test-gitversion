@@ -5,22 +5,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
-  tag-semver:
-    uses: "./.github/workflows/tag-semver.yml"
-    permissions:
-      contents: write
-
-  test:
-    needs: tag-semver
+  first-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo a message
-        run: echo "Testing preview"
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  deploy-test:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Echo a message
-        run: echo "Deploying preview"
+      - name: Tag SemVer
+        uses: ./.github/actions/tag-semver

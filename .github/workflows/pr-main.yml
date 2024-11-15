@@ -6,15 +6,17 @@ on:
       - main
 
 jobs:
-  test:
+  ory-cli:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo a message
-        run: echo "Testing preview"
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  deploy-preview:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Echo a message
-        run: echo "Deploying preview"
+      - name: Run Ory CLI
+        uses: ./.github/actions/ory-cli
+        with:
+          ory-project-api-key: ory_pat_9sqAQoADu3ZuOqzvRLT1aMPQtKR6mVjS
+          preview-number: 777
+          client-id: b67cdd76-e8c3-4b73-9a0b-e1f97cdceda1
