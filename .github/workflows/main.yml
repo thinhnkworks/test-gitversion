@@ -10,17 +10,3 @@ jobs:
     uses: "./.github/workflows/tag-semver.yml"
     permissions:
       contents: write
-
-  test:
-    needs: tag-semver
-    runs-on: ubuntu-latest
-    steps:
-      - name: Echo a message
-        run: echo "Testing preview"
-
-  deploy-test:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Echo a message
-        run: echo "Deploying preview"

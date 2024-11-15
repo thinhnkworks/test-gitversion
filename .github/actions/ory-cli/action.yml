@@ -1,0 +1,62 @@
+name: "ory-update-redirect-uri"
+description: "Ory CLI script to update POST_LOGOUT_CALLBACK and REDIRECT_URI"
+
+inputs:
+  ory-project-api-key:
+    description: "Ory Project API Key"
+    required: true
+  preview-number:
+    description: "Preview number"
+    required: true
+  client-id:
+    description: "Ory Client ID"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Install Ory
+      shell: bash
+      run: |
+          curl https://raw.githubusercontent.com/ory/meta/master/install.sh | sh -s ory
+
+    - name: Export env
+      shell: bash
+      run: |
+        echo "ORY_PROJECT_API_KEY=${{ inputs.ory-project-api-key }}" >> $GITHUB_ENV
+    
+    - name: Get current POST_LOGOUT_CALLBACK and REDIRECT_URI
+      shell: bash
+      run: |
+        POST_LOGOUT_CALLBACK=$(./bin/ory get oauth2-client ${{ inputs.client-id }} --format json | jq -r '.post_logout_redirect_uris | join(",")')
+        echo "POST_LOGOUT_CALLBACK=$POST_LOGOUT_CALLBACK" >> $GITHUB_ENV
+        REDIRECT_URI=$(./bin/ory get oauth2-client ${{ inputs.client-id }} --format json | jq -r '.redirect_uris | join(",")')
+        echo "REDIRECT_URI=$REDIRECT_URI" >> $GITHUB_ENV
+
+    - name: Add new URIs to POST_LOGOUT_CALLBACK and REDIRECT_URI
+      shell: bash
+      run: |
+        echo "POST_LOGOUT_CALLBACK=${{ env.POST_LOGOUT_CALLBACK }},https://sales.timejob-online.dev/preview-${{ inputs.preview-number }}/app/logout" >> $GITHUB_ENV
+        echo "REDIRECT_URI=${{ env.REDIRECT_URI }},https://sales.timejob-online.dev/preview-${{ inputs.preview-number }}/app" >> $GITHUB_ENV
+        echo "REDIRECT_URI=${{ env.REDIRECT_URI }},https://sales.timejob-online.dev/preview-${{ inputs.preview-number }}/app,https://sales.timejob-online.dev/preview-${{ inputs.preview-number }}/app/" >> $GITHUB_ENV
+
+    - name: Update Client POST_LOGOUT_CALLBACK and REDIRECT_URI
+      shell: bash
+      run: |
+        ./bin/ory update oauth2-client\
+          ${{ inputs.client-id }}\
+          --post-logout-callback "${{ env.POST_LOGOUT_CALLBACK }}"\
+          --redirect-uri "${{ env.REDIRECT_URI }}"\
+          --name "Sales SPA"\
+          --access-token-strategy "jwt"\
+          --grant-type "refresh_token,authorization_code"\
+          --response-type "code,token"\
+          --scope "openid offline_access"\
+          --skip-consent\
+          --skip-logout-consent\
+          --token-endpoint-auth-method "none"
